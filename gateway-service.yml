@@ -1,5 +1,6 @@
+#Configuración
 server:
-  port: 8084
+  port: 8091
 
 spring:
   config:
@@ -17,7 +18,13 @@ spring:
                 #http://localhost:8082
           predicates:
             - Path=/checkout
-
+        - id: products-service
+          uri: lb://products-service
+          predicates:
+            - Path=/products/**
+          filters:
+          - AddRequestHeader=X-Request-from, gateway
+          - AddResponseHeader=X-Response-Red, Blue
 eureka:
   instance:
     hostname: localhost
