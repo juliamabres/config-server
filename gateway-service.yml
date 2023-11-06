@@ -12,24 +12,28 @@ spring:
      resourceserver:
       jwt:
        issuer-ori: https://localhost:8080/realms/dh
-  cloud:
-    gateway:
+cloud:
+  config: 
       discovery:
         serviceId: config-service
         enabled: true
+  gateway:
+      default-filters:
+        - TokenRelay= 
       routes:
         - id: checkout-service
-          uri: lb://checkout-service #lb loadbalancer
+          uri: lb://checkout-service 
                 #http://localhost:8082
           predicates:
             - Path=/checkout
+          filters:
+            - AddRequestHeader=X-Request-from, gateway
+            - AddResponseHeader=X-Response-Red, Blue
         - id: products-service
           uri: lb://products-service
           predicates:
             - Path=/products/**
-          filters:
-          - AddRequestHeader=X-Request-from, gateway
-          - AddResponseHeader=X-Response-Red, Blue
+          
 eureka:
   instance:
     hostname: localhost
